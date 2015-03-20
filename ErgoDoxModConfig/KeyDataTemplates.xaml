@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:view="clr-namespace:ErgoDoxModConfig">
+    <DataTemplate x:Key="VMKeyNormal">
+        <view:KeyView/>
+    </DataTemplate>
+    <DataTemplate x:Key="VMKeyModifier">
+        <view:KeyViewModifier/>
+    </DataTemplate>
+    <DataTemplate x:Key="VMKeyControlPanel">
+        <view:ControlPanel VerticalAlignment="Bottom" Height="30"/>
+    </DataTemplate>
+    
+    <!-- メニューアイテムに値をセットしたりセパレータを作ったりするStyle -->
+    <Style x:Key="KeyContextMenuStyle" TargetType="MenuItem">
+        <Setter Property="Command" Value="{Binding MICommand}"/>
+        <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=OneWay}"/>
+        <Setter Property="IsEnabled" Value="{Binding IsSelectable, Mode=OneWay}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSeparator}" Value="true">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>    
+    
+    <!-- 階層化された情報を元にメニューを作るためのテンプレート -->
+    <HierarchicalDataTemplate x:Key="KeyContextMenuTemplate" ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource KeyContextMenuStyle}">
+        <TextBlock Text="{Binding MIHeader}"/>
+    </HierarchicalDataTemplate>
+    
+    <!-- 各所で参照すべきContextMenu -->
+    <ContextMenu x:Key="KeyContextMenu" ItemsSource="{Binding MenuItems.Value}" ItemTemplate="{StaticResource KeyContextMenuTemplate}" ItemContainerStyle="{StaticResource KeyContextMenuStyle}"/>
+</ResourceDictionary>

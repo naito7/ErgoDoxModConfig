@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="ErgoDoxModConfig.KeyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+             xmlns:view="clr-namespace:ErgoDoxModConfig"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="30">
+    <UserControl.Resources>
+        <view:BoolToBrushForSelected x:Key="B2B"/>
+    </UserControl.Resources>
+    <Canvas>
+        <!-- StyleではなくBindingとConverterを使うなら以下のようになる -->
+        <!--BorderThickness="1" BorderBrush="{Binding IsSelected.Value, Converter={StaticResource B2B}}"-->
+        <Border Width="{Binding Width}" Height="{Binding Height}"
+            LayoutTransform="{Binding Transform}"
+            BorderThickness="1"
+            Canvas.Left="{Binding Left}" Canvas.Top="{Binding Top}">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected.Value}" Value="True">
+                            <Setter Property="BorderBrush" Value="Red"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Button Content="{Binding Text}" FontSize="10"
+                ContextMenu="{StaticResource KeyContextMenu}">
+                <Button.InputBindings>
+                    <MouseBinding Gesture="CTRL+LeftClick" Command="{Binding CmdMultiSelect}"/>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding CmdSingleSelect}"/>
+                </Button.InputBindings>
+            </Button>
+        </Border>
+    </Canvas>
+</UserControl>
